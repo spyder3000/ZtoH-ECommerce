@@ -6,6 +6,7 @@ import {
 	signInWithPopup,
 	GoogleAuthProvider,
 	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword,
 } from "firebase/auth"; // getAuth used to create an auth instance
 
 import {
@@ -97,6 +98,20 @@ export const createAuthUserWithEmailAndPassword = async ({
 
 	// will create an authenticated user & pass back an auth object
 	let authObj = await createUserWithEmailAndPassword(auth, email, password);
+	console.log(authObj);
+	return authObj;
+};
+
+// what we're making is an Authenticated user w/in Firebase
+export const signInAuthUserWithEmailAndPassword = async ({
+	email,
+	password,
+}) => {
+	if (!email || !password) return;
+	console.log("firebase.utils", email, password);
+	// will create an authenticated user & pass back an auth object
+	let authObj = await signInWithEmailAndPassword(auth, email, password);
+	console.log("return");
 	console.log(authObj);
 	return authObj;
 };
