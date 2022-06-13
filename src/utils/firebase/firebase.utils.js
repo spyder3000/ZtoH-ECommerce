@@ -7,6 +7,8 @@ import {
 	GoogleAuthProvider,
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
+	signOut,
+	onAuthStateChanged,
 } from "firebase/auth"; // getAuth used to create an auth instance
 
 import {
@@ -115,3 +117,14 @@ export const signInAuthUserWithEmailAndPassword = async ({
 	console.log(authObj);
 	return authObj;
 };
+
+// what we're making is an Authenticated user w/in Firebase
+export const signOutUser = async () => {
+	await signOut(auth);
+};
+
+// this fn returns whatever you get back from onAuthStateChange();  whenever you instantiate this
+//    fn, you need to send a callback
+// This functions as an always open Listener (for auth changes);  needs to close in user.context.jsx
+export const onAuthStateChangedListener = (callback) =>
+	onAuthStateChanged(auth, callback); // e.g. when user signs in, signs out
