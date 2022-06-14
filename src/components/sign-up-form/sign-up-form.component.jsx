@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 
@@ -7,11 +7,7 @@ import {
 	createUserDocumentFromAuth,
 } from "../../utils/firebase/firebase.utils";
 
-import { UserContext } from "../../contexts/user.context";
-
 import "./sign-up-form.styles.scss";
-
-import { getRedirectResult } from "firebase/auth";
 
 const defaultFormFields = {
 	displayName: "",
@@ -23,9 +19,6 @@ const defaultFormFields = {
 const SignUpForm = () => {
 	const [formFields, setFormFields] = useState(defaultFormFields);
 	const { displayName, email, password, confirmPassword } = formFields;
-
-	const { setCurrentUser } = useContext(UserContext); // whenever UserContext values change, this component will rerun
-	console.log("hit");
 
 	const resetFormFields = () => {
 		setFormFields(defaultFormFields);
@@ -44,8 +37,6 @@ const SignUpForm = () => {
 				email,
 				password,
 			});
-
-			setCurrentUser(user); // capture user data & save in user Context (e.g. currentUser)
 
 			// pass email & pwd into final document we're trying to generate, via createUserDocumentFromAuth
 			//    which assumes email, password, & userName;  we only have email & pwd from user object though

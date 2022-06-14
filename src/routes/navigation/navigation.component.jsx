@@ -12,12 +12,8 @@ import "./navigation.styles.scss";
 // parent level component;  use Fragment if you don't want a wrapping div -- satisfies React's criteria of just one top-level components
 const Navigation = () => {
 	// this will re-render at sign-in/sign-out due to useState() in user.context.jsx
-	const { currentUser, setCurrentUser } = useContext(UserContext);
+	const { currentUser } = useContext(UserContext);
 
-	const signOutHandler = async () => {
-		await signOutUser();
-		setCurrentUser(null);
-	};
 	// console.log(currentUser);
 	return (
 		<>
@@ -30,7 +26,7 @@ const Navigation = () => {
 						SHOP
 					</Link>
 					{currentUser ? (
-						<span className="nav-link" onClick={signOutHandler}>
+						<span className="nav-link" onClick={signOutUser}>
 							SIGN OUT
 						</span>
 					) : (
