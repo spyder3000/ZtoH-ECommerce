@@ -11,7 +11,7 @@ export const UserContext = createContext({
 	setCurrentUser: () => null,
 });
 
-// e.g. to wrap around a component
+// e.g. to wrap around a component  -- ch 104
 export const UserProvider = ({ children }) => {
 	// useState here will cause the components to re-render that use this property
 	const [currentUser, setCurrentUser] = useState(null); // init value of null is for the state, different from context
