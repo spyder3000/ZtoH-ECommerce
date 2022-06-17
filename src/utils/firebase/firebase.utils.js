@@ -11,11 +11,16 @@ import {
 	onAuthStateChanged,
 } from "firebase/auth"; // getAuth used to create an auth instance
 
+// fireStore governs our Database
 import {
 	getFirestore,
 	doc, // allows us to retrieve documents from firestore;  doc will get you the document instance
 	getDoc, // getting the document data
 	setDoc, // set the document data
+	collection,
+	writeBatch,
+	query,
+	getDocs,
 } from "firebase/firestore";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -48,6 +53,41 @@ export const signInWithGoogleRedirect = () =>
 	signInWithRedirect(auth, provider);
 
 export const db = getFirestore();
+
+// e.g. collectionKey = 'category'
+export const addCollectionAndDocuments = async (
+	collectionKey,
+	objectsToAdd
+) => {
+	const collectionRef = collection(db, collectionKey);
+	const batch = writeBatch(db); // batch instance
+	// can attach multiple set Events to batch
+
+	// e.g. data for the 5 categories
+	objectsToAdd.forEach((object) => {
+		const docRef = doc(collectionRef, object.title.toLowerCase());
+		batch.set(docRef, object); // Firebase will give us a docRef even if document doesnt exist on FB yet
+	});
+
+	await batch.commit();
+	console.log("done");
+};
+
+export const getCategoriesAndDocuments = async () => {
+	const collectionRef = collection(db, "categories");
+	const q = query(collectionRef);
+
+	const querySnapshot = await getDocs(q); // fetch the document snapshots we want
+
+	// creates an array where the key is title which points to the items
+	const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+		const { title, items } = docSnapshot.data(); // snapshots are the data itself
+		acc[title.toLowerCase()] = items;
+		return acc;
+	}, {});
+
+	return categoryMap;
+};
 
 // async fn that receives some user Authentication object;
 //   additionalInformation is because we sometimes do not get displayName in userAuth (ch 98);  default of {}
