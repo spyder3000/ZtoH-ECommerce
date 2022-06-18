@@ -11,7 +11,14 @@ import { CartContext } from "../../contexts/cart.context";
 import { signOutUser } from "../../utils/firebase/firebase.utils.js";
 
 import { ReactComponent as CrwnLogo } from "../../assets/crown.svg";
-import "./navigation.styles.scss";
+
+// import "./navigation.styles.jsx";
+import {
+	NavigationContainer,
+	LogoContainer,
+	NavLinks,
+	NavLink,
+} from "./navigation.styles";
 
 // parent level component;  use Fragment if you don't want a wrapping div -- satisfies React's criteria of just one top-level components
 const Navigation = () => {
@@ -22,27 +29,25 @@ const Navigation = () => {
 	// console.log(currentUser);
 	return (
 		<>
-			<div className="navigation">
-				<Link className="logo-container" to="/">
+			<NavigationContainer>
+				<LogoContainer to="/">
 					<CrwnLogo className="logo" />
-				</Link>
-				<div className="nav-links-container">
-					<Link className="nav-link" to="/shop">
-						SHOP
-					</Link>
+				</LogoContainer>
+				<NavLinks>
+					<NavLink to="/shop">SHOP</NavLink>
 					{currentUser ? (
-						<span className="nav-link" onClick={signOutUser}>
+						<NavLink as="span" onClick={signOutUser}>
 							SIGN OUT
-						</span>
+						</NavLink>
 					) : (
-						<Link className="nav-link" to="/auth">
+						<NavLink className="nav-link" to="/auth">
 							SIGN IN
-						</Link>
+						</NavLink>
 					)}
 					<CartIcon />
-				</div>
+				</NavLinks>
 				{isCartOpen && <CartDropdown />}
-			</div>
+			</NavigationContainer>
 			<Outlet />
 		</>
 	);
