@@ -1,5 +1,6 @@
-import { useEffect } from "react";
-import { createContext, useState } from "react";
+import { useReducer, createContext } from "react";
+
+import { createAction } from "../utils/reducer/reducer.utils";
 
 // return new array with modified cartItems / new cart item;  Note:  productToAdd does not include 'quantity'
 const addCartItem = (cartItems, productToAdd) => {
@@ -56,44 +57,84 @@ export const CartContext = createContext({
 	removeItemFromCart: () => {},
 });
 
+const INITIAL_STATE = {
+	isCartOpen: false,
+	cartItems: [],
+	cartCount: 0,
+	cartTotal: 0,
+};
+
+export const CART_ACTION_TYPES = {
+	SET_CART_ITEMS: "SET_CART_ITEMS",
+	SET_IS_CART_OPEN: "SET_IS_CART_OPEN",
+};
+
+// ch 146 -- can sometimes use state object to derive next value (e.g. increment counter)
+const cartReducer = (state, action) => {
+	const { type, payload } = action;
+
+	switch (type) {
+		case CART_ACTION_TYPES.SET_CART_ITEMS:
+			return {
+				...state, // we're returning a new object, so we want to include all previous values
+				...payload, // payload will contain cartItems, cartCount, cartTotal
+			};
+		case CART_ACTION_TYPES.SET_IS_CART_OPEN:
+			return {
+				...state, // we're returning a new object, so we want to include all previous values
+				isCartOpen: payload, // payload is just a boolean for this one
+			};
+		default:
+			throw new Error(`Unhandled type ${type} in cartReducer`);
+	}
+};
+
 export const CartProvider = ({ children }) => {
-	const [isCartOpen, setIsCartOpen] = useState(false);
-	const [cartItems, setCartItems] = useState([]);
-	const [cartCount, setCartCount] = useState(0);
-	const [cartTotal, setCartTotal] = useState(0);
+	const [state, dispatch] = useReducer(cartReducer, INITIAL_STATE);
+	const { cartItems, isCartOpen, cartCount, cartTotal } = state;
 
-	// every time cartItems changes, run this function to re-calculate cartCount
-	useEffect(() => {
-		const newCartCount = cartItems.reduce(
-			(total, cartItem) => total + cartItem.quantity,
-			0
-		);
-		setCartCount(newCartCount);
-	}, [cartItems]);
-
-	// every time cartItems changes, run this function to re-calculate cartTotal
-	//  ** NOTE:  BEST practice – use just one useEffect() for each variable being governed (& not add to existing useEffect for cartCount
-	useEffect(() => {
-		const newCartTotal = cartItems.reduce(
+	const updateCartItemsReducer = (newCartItems) => {
+		const newCartTotal = newCartItems.reduce(
 			(total, cartItem) => total + cartItem.quantity * cartItem.price,
 			0
 		);
-		setCartTotal(newCartTotal);
-	}, [cartItems]);
 
-	// addCartItem() -- will return updated array of objects
+		const newCartCount = newCartItems.reduce(
+			(total, cartItem) => total + cartItem.quantity,
+			0
+		);
+
+		dispatch(
+			createAction(CART_ACTION_TYPES.SET_CART_ITEMS, {
+				cartItems: newCartItems,
+				cartTotal: newCartTotal,
+				cartCount: newCartCount,
+			})
+		);
+	};
+
+	/* --  ACTION CREATOR FUNCTIONS   -- */
+	// ch 147 -- replace setCartItems with Reducer logic
 	const addItemToCart = (productToAdd) => {
-		setCartItems(addCartItem(cartItems, productToAdd));
+		// setCartItems(addCartItem(cartItems, productToAdd));
+		const newCartItems = addCartItem(cartItems, productToAdd); // updated array of objects
+		updateCartItemsReducer(newCartItems);
 	};
 
-	// removeItemFromCart() -- will return updated array of objects
 	const removeItemFromCart = (cartItemToRemove) => {
-		setCartItems(removeCartItem(cartItems, cartItemToRemove));
+		// setCartItems(removeCartItem(cartItems, cartItemToRemove));
+		const newCartItems = removeCartItem(cartItems, cartItemToRemove); // updated array of objects
+		updateCartItemsReducer(newCartItems);
 	};
 
-	// clearItemFromCart() -- will return updated array of objects
 	const clearItemFromCart = (cartItemToDelete) => {
-		setCartItems(clearCartItem(cartItems, cartItemToDelete));
+		// setCartItems(clearCartItem(cartItems, cartItemToDelete));
+		const newCartItems = clearCartItem(cartItems, cartItemToDelete); // updated array of objects
+		updateCartItemsReducer(newCartItems);
+	};
+
+	const setIsCartOpen = (bool) => {
+		dispatch(createAction(CART_ACTION_TYPES.SET_IS_CART_OPEN, bool));
 	};
 
 	// value is what we want to expose in the Context
