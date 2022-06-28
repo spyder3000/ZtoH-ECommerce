@@ -1,16 +1,16 @@
-import { Fragment, useContext } from "react";
+import { Fragment } from "react";
+import { Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-import { Outlet, Link } from "react-router-dom";
+// import { UserContext } from "../../contexts/yyuser.context";
+import { selectCurrentUser } from "../../store/user/user.selector";
+import { selectIsCartOpen } from "../../store/cart/cart.selector";
 
 import CartIcon from "../../components/cart-icon/cart-icon.component";
 import CartDropdown from "../../components/cart-dropdown/cart-dropdown.component";
 
-import { UserContext } from "../../contexts/user.context";
-import { CartContext } from "../../contexts/cart.context";
-
-import { signOutUser } from "../../utils/firebase/firebase.utils.js";
-
 import { ReactComponent as CrwnLogo } from "../../assets/crown.svg";
+import { signOutUser } from "../../utils/firebase/firebase.utils.js";
 
 // import "./navigation.styles.jsx";
 import {
@@ -22,11 +22,10 @@ import {
 
 // parent level component;  use Fragment if you don't want a wrapping div -- satisfies React's criteria of just one top-level components
 const Navigation = () => {
-	// this will re-render at sign-in/sign-out due to useState() in user.context.jsx
-	const { currentUser } = useContext(UserContext);
-	const { isCartOpen } = useContext(CartContext);
+	// const currentUser = useSelector((state) => state.user.currentUser);  // moved to store\users folder
+	const currentUser = useSelector(selectCurrentUser);
+	const isCartOpen = useSelector(selectIsCartOpen);
 
-	// console.log(currentUser);
 	return (
 		<>
 			<NavigationContainer>

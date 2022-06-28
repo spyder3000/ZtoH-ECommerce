@@ -1,22 +1,24 @@
-import { useContext, useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
+import { selectCategoriesMap } from "../../store/categories/categories.selector";
 import ProductCard from "../../components/product-card/product-card.component";
-
-import { CategoriesContext } from "../../contexts/categories.context";
 
 import { CategoryContainer, CategoryTitle } from "./category.styles";
 
 // URL will tell us which category we are using
 const Category = () => {
+	console.log("render/re-rendering category component");
 	const { category } = useParams(); // to get ‘category’ value from URL parameters;
-	const { categoriesMap } = useContext(CategoriesContext);
+	const categoriesMap = useSelector(selectCategoriesMap);
 
 	// only want to calculate products when category or categoriesMap changes
 	// categoriesMap[category] will work because this defaults to empty array
 	const [products, setProducts] = useState(categoriesMap[category]); // useState([]);
 
 	useEffect(() => {
+		console.log("effect fired calling setProducts");
 		setProducts(categoriesMap[category]);
 	}, [category, categoriesMap]);
 

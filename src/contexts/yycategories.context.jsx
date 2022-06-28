@@ -2,9 +2,6 @@ import { createContext, useState, useEffect } from "react";
 
 import { getCategoriesAndDocuments } from "../utils/firebase/firebase.utils.js";
 
-// import PRODUCTS from "../shop-data.json";
-// import SHOP_DATA from "../shop-data.js";
-
 // the actual value you want to access, both the curr value & the setter
 export const CategoriesContext = createContext({
 	categoriesMap: {}, // an empty map is typically the empty state of a map -- {} in this case
@@ -31,17 +28,6 @@ export const CategoriesProvider = ({ children }) => {
 	// }, []);
 
 	const value = { categoriesMap };
-
-	// useEffect(() => {
-	// 	const unsubscribe = onAuthStateChangedListener((user) => {
-	// 		console.log(user); // user will be an authenticated user object OR null
-	// 		if (user) {
-	// 			createUserDocumentFromAuth(user);
-	// 		}
-	// 		setCurrentUser(user);
-	// 	});
-	// 	return unsubscribe; // runs when we unmount;  cleans up this method (to prevent memory leaks when no longer needed)
-	// }, []);
 
 	return (
 		<CategoriesContext.Provider value={value}>
