@@ -13,7 +13,8 @@ import { rootReducer } from "./root-reducer";
 const persistConfig = {
 	key: "root", // 'root' says persist the whole thing
 	storage: storage,
-	blacklist: ["user"], // because user is coming from auth state anyway -- not needed, could be a conflict
+	// blacklist: ["user"], // because user is coming from auth state anyway -- not needed, could be a conflict
+	whitelist: ["cart"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
