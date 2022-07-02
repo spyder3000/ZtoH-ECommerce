@@ -120,7 +120,8 @@ export const createUserDocumentFromAuth = async (
 	}
 
 	// returns existing OR just created userDocRef;
-	return userDocRef;
+	// return userDocRef;
+	return userSnapshot;
 
 	// if user data exists, return user data reference
 };
@@ -146,6 +147,7 @@ export const signInAuthUserWithEmailAndPassword = async ({
 	if (!email || !password) return;
 	console.log("firebase.utils", email, password);
 	// will create an authenticated user & pass back an auth object
+	console.log("auth = ", auth);
 	let authObj = await signInWithEmailAndPassword(auth, email, password);
 	console.log("return");
 	console.log(authObj);

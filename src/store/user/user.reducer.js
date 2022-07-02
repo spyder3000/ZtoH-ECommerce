@@ -11,6 +11,7 @@ export const userReducer = (state = INITIAL_STATE, action = {}) => {
 
 	switch (type) {
 		case USER_ACTION_TYPES.SET_CURRENT_USER:
+			console.log("user.reducer.js", payload);
 			return {
 				...state, // we're returning a new object, so we want to include all previous values
 				currentUser: payload,

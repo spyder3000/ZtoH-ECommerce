@@ -19,7 +19,7 @@ const App = () => {
 	const dispatch = useDispatch();
 	useEffect(() => {
 		const unsubscribe = onAuthStateChangedListener((user) => {
-			console.log(user); // user will be an authenticated user object OR null
+			console.log("App.js - useEffect - onAuthStateChangedListener: ", user); // user will be an authenticated user object OR null
 			if (user) {
 				createUserDocumentFromAuth(user);
 			}
